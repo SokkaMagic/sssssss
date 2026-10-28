@@ -1,0 +1,165 @@
+name: Autograding Tests
+
+on:
+  push:
+    paths:
+      - 'assignment.py'
+      - 'test_assignment.py'
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pytest
+        run: pip install -r requirements.txt
+
+      - name: Ex 1 - Queue set up
+        id: ex1_initial_queue
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 1 - Queue set up
+          command: pytest test_assignment.py::test1_initial_queue
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 1 - Enqueue
+        id: ex1_enqueue
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 1 - Enqueue
+          command: pytest test_assignment.py::test1_enqueue
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 1 - Enqueue when full
+        id: ex1_enqueue_when_full
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 1 - Enqueue when full
+          command: pytest test_assignment.py::test1_enqueue_when_full
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 1 - Dequeue
+        id: ex1_dequeue
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 1 - Dequeue
+          command: pytest test_assignment.py::test1_dequeue
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 1 - Dequeue when empty
+        id: ex1_dequeue_when_empty
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 1 - Dequeue when empty
+          command: pytest test_assignment.py::test1_dequeue_when_empty
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 1 - Wraps around
+        id: ex1_wraps_around
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 1 - Wraps around
+          command: pytest test_assignment.py::test1_wraps_around
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 1 - Uses pointers
+        id: ex1_uses_pointers
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 1 - Uses pointers
+          command: pytest test_assignment.py::test1_uses_pointers
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 2 - Load queue
+        id: ex2_load_queue
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 2 - Load queue
+          command: pytest test_assignment.py::test2_load_queue
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 2 - Load when full
+        id: ex2_load_when_full
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 2 - Load when full
+          command: pytest test_assignment.py::test2_load_when_full
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 2 - Adds to back
+        id: ex2_adds_to_back
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 2 - Adds to back
+          command: pytest test_assignment.py::test2_adds_to_back
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 3 - Remove negatives
+        id: ex3_remove_negatives
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 3 - Remove negatives
+          command: pytest test_assignment.py::test3_remove_negatives
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 3 - After wrap around
+        id: ex3_after_wrap_around
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 3 - After wrap around
+          command: pytest test_assignment.py::test3_after_wrap_around
+          timeout: 2
+          max-score: 1
+
+      - name: Ex 3 - All negative
+        id: ex3_all_negative
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Ex 3 - All negative
+          command: pytest test_assignment.py::test3_all_negative
+          timeout: 2
+          max-score: 1
+
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          EX1_INITIAL_QUEUE_RESULTS: "${{ steps.ex1_initial_queue.outputs.result }}"
+          EX1_ENQUEUE_RESULTS: "${{ steps.ex1_enqueue.outputs.result }}"
+          EX1_ENQUEUE_WHEN_FULL_RESULTS: "${{ steps.ex1_enqueue_when_full.outputs.result }}"
+          EX1_DEQUEUE_RESULTS: "${{ steps.ex1_dequeue.outputs.result }}"
+          EX1_DEQUEUE_WHEN_EMPTY_RESULTS: "${{ steps.ex1_dequeue_when_empty.outputs.result }}"
+          EX1_WRAPS_AROUND_RESULTS: "${{ steps.ex1_wraps_around.outputs.result }}"
+          EX1_USES_POINTERS_RESULTS: "${{ steps.ex1_uses_pointers.outputs.result }}"
+          EX2_LOAD_QUEUE_RESULTS: "${{ steps.ex2_load_queue.outputs.result }}"
+          EX2_LOAD_WHEN_FULL_RESULTS: "${{ steps.ex2_load_when_full.outputs.result }}"
+          EX2_ADDS_TO_BACK_RESULTS: "${{ steps.ex2_adds_to_back.outputs.result }}"
+          EX3_REMOVE_NEGATIVES_RESULTS: "${{ steps.ex3_remove_negatives.outputs.result }}"
+          EX3_AFTER_WRAP_AROUND_RESULTS: "${{ steps.ex3_after_wrap_around.outputs.result }}"
+          EX3_ALL_NEGATIVE_RESULTS: "${{ steps.ex3_all_negative.outputs.result }}"
+        with:
+          runners: ex1_initial_queue,ex1_enqueue,ex1_enqueue_when_full,ex1_dequeue,ex1_dequeue_when_empty,ex1_wraps_around,ex1_uses_pointers,ex2_load_queue,ex2_load_when_full,ex2_adds_to_back,ex3_remove_negatives,ex3_after_wrap_around,ex3_all_negative
